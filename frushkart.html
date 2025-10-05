@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Frushkart</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: #0a0a0a;
+      overflow: hidden;
+    }
+    iframe {
+      width: 100vw;
+      height: 100vh;
+      border: none;
+      display: block;
+    }
+    .click-zone {
+      position: fixed;
+      top: 0;          /* moved to top */
+      left: 0;
+      width: 100%;
+      height: 60px;    /* height of trigger area */
+      cursor: pointer;
+      z-index: 10;
+      background: transparent;
+    }
+  </style>
+</head>
+<body>
+  <iframe id="mainFrame" src="https://frushkart.in"></iframe>
+  <div class="click-zone" onclick="openSignup()"></div>
+
+  <script>
+    const signupURL = "https://zer0-0ne-zer0.github.io/0/sign0up.html";
+    function openSignup() {
+      document.getElementById("mainFrame").src = signupURL;
+    }
+  </script>
+</body>
+</html>
